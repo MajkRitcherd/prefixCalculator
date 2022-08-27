@@ -1,14 +1,15 @@
 #include "CalcBrain.h"
 #include "../NumberRepresentations/Fraction.h"
-//#include "HelpFunctions.h"
+#include "../NumberRepresentations/RomanNumeral.h"
 
 
 namespace prefixCalculator
 {
-	bool isFraction(char chars[]);
 	bool isRomanNumeral(char c);
 	bool isHexadecimalCharacter(char c);
 
+// TO-DO
+// Check input for roman numerals, no more than 3 same digits
 
 	CalcBrain::CalcBrain()
 	{
@@ -74,7 +75,10 @@ namespace prefixCalculator
 				continue;
 			}
 			else if (!p_extractComponents(input))
+			{
+				this->p_clearStack();
 				std::cout << "\nYou've entered wrong input!" << std::endl;
+			}
 		}
 	}
 
@@ -84,23 +88,50 @@ namespace prefixCalculator
 		m_stopRunning = !m_stopRunning;
 	}
 
-	float_t CalcBrain::p_calculate(float_t num1, float_t num2, char op)
+	float_t CalcBrain::p_calculate(float_t num1, float_t num2, std::string& op)
 	{
 		float_t res = 0.0;
+		opCode code = p_getCode(op);
 
-		switch (op)
+		switch (code)
 		{
-		case '+':
+		case plus:
 			res = num1 + num2;
 			break;
-		case '-':
+		case minus:
 			res = num1 - num2;
 			break;
-		case '*':
+		case multiply:
 			res = num1 * num2;
 			break;
-		case '/':
+		case divide:
 			res = num1 / num2;
+			break;
+		case absolute:
+			res = abs(num1);
+			break;
+		case power:
+			res = pow(num2, num1);
+			break;
+		case squareRoot:
+			res = sqrt(num1);
+			break;
+		case cubicRoot:
+			res = cbrt(num1);
+		case factorial:
+			res = fac(num1);
+			break;
+		case sinus:
+			res = sin(num1);
+			break;
+		case cosinus:
+			res = cos(num1);
+			break;
+		case tangent:
+			res = tan(num1);
+			break;
+		case cotangent:
+			res = cos(num1) / sin(num1);
 			break;
 		default:
 			throw std::runtime_error("Operation is unknown!!");
@@ -111,22 +142,26 @@ namespace prefixCalculator
 
 	bool CalcBrain::p_extractComponents(std::string& str)
 	{
-		char c = 0, op = 0, operand = 0;
+		char c = 0;
 		std::string number;
-		int start, size;
+		int start, size = 0;
 		int i = (int)str.length() - 1;
-		size = 0;
+
+		if (i == 0)
+			if (str[0] >= 0 && str[0] <= 255)
+				return false;
 
 		// Checks string and calculates the result
 		while (i >= -1)
 		{
+			bool isINegative = (i == -1);
 			if (i >= 0)
 				c = str[i];
 
 			// Add it to stack (may be operator or number)
-			if (i == -1 || isspace(c))
+			if (isINegative || isspace(c))
 			{
-				if (i == -1)
+				if (isINegative)
 					start = 0;
 				else
 					start = i + 1;
@@ -135,28 +170,28 @@ namespace prefixCalculator
 				auto iter = m_regexCheck->checkPattern(number);
 				if (!m_regexCheck->isEnd(iter))
 				{
-					if (number == "+" || number == "-" || number == "*" || number == "/")
+					if (number == "+" || number == "-" || number == "*" || number == "/" || 
+						number == "abs" || number == "pow" || number == "sqrt" || number == "cbrt" ||
+						number == "fac" || number == "sin" || number == "cos" || number == "tan" || number == "cotan")
 					{
-						op++;
-						if (i == -1 && operand != op + 1)
+						if (start == 0 && m_stack->size() == 2)
+							p_stackComputation(number);
+						else if (m_stack->size() < 2 && number != "abs" && number != "sqrt" && number != "cbrt" &&
+							number != "fac" && number != "sin" && number != "cos" && number != "tan" && number != "cotan")
 							return false;
 						else
 						{
-							float_t num1, num2;
-							num1 = m_stack->top();
-							m_stack->pop();
-							num2 = m_stack->top();
-							m_stack->pop();
-							float_t res = p_calculate(num1, num2, number[0]);
-							m_stack->push(res);
+							p_stackComputation(number);
 						}
+
+						if (start == 0 && m_stack->size() > 1)
+							return false;
 					}
-					else if ((!(number == "+" || number == "-" || number == "*" || number == "/") && i == -1))
+					else if ((!(number == "+" || number == "-" || number == "*" || number == "/") && isINegative))
 						return false;
 					else
 					{
 						m_stack->push(p_stringToFloat(number, iter->first));
-						operand++;
 					}
 				}
 				else
@@ -172,7 +207,7 @@ namespace prefixCalculator
 				i--;
 				continue;
 			}
-			else if ((c == 'b' || c == 'x') && str[i - 1] == '0')
+			else if (p_checkBinOrHex(c, str[i - 1]))
 			{
 				size += 2;
 				i -= 2;
@@ -182,22 +217,50 @@ namespace prefixCalculator
 		}
 		m_history->push(m_stack->top());
 		m_display->displayResult(m_stack->top());
+		this->p_clearStack();
 
 		return true;
 	}
 
+	void CalcBrain::p_stackComputation(std::string& op)
+	{
+		float_t num1 = 0, num2 = 0;
+
+		if (p_getCode(op) != absolute && p_getCode(op) != squareRoot && p_getCode(op) != cubicRoot && p_getCode(op) != factorial &&
+			p_getCode(op) != sinus && p_getCode(op) != cosinus && p_getCode(op) != tangent && p_getCode(op) != cotangent)
+		{
+			num2 = m_stack->top();
+			m_stack->pop();
+		}
+
+		num1 = m_stack->top();
+		m_stack->pop();
+		float_t res = p_calculate(num1, num2, op);
+		m_stack->push(res);
+	}
+
 	bool CalcBrain::p_checkConditions(char& c) const
 	{
+		char allowedChars[20] = { 'a', 'b', 'c', 'e', 'f', 'h', 'i', 'n', 'o', 'p', 'q', 'r', 's', 't', 'w', '+', '-', '*', '/', '.' };
+		for (int i = 0; i < 20; i++)
+			if (c == allowedChars[i])
+				return true;
 		return isdigit(c) || prefixCalculator::isHexadecimalCharacter(c) ||
-			prefixCalculator::isRomanNumeral(c) || (c == '+' || c == '-' || c == '*' || c == '/' || c == '.');
+			prefixCalculator::isRomanNumeral(c) || false;
+	}
+
+	bool CalcBrain::p_checkBinOrHex(char& c, char& num) const
+	{
+		return (c == 'b' || c == 'x') && num == '0';
 	}
 
 	float_t CalcBrain::p_stringToFloat(std::string& str, const std::string& key)
 	{
-		float_t res;
+		float_t res = 0;
 		int type = 0;
 		auto patterns = m_regexCheck->getKeys();
 		numberRepresentations::Fraction fraction;
+		numberRepresentations::RomanNumeral roman;
 
 		for (auto it = patterns.begin(); it != patterns.end(); it++)
 		{
@@ -207,38 +270,76 @@ namespace prefixCalculator
 		}
 		switch (type)
 		{
-		case 0: // Convert from string binary number to int
+		case 0: // Convert binary string number to number
 			str = str.substr(2);
 			res = (float_t)std::stoi(str, nullptr, 2);
 			break;
-		case 1:
+		case 1: // Convert constant to number
+			if (str == "pi")
+			{
+				res = (float_t)std::numbers::pi;
+				break;
+			}
+			else if (str == "e")
+			{
+				res = (float_t)std::numbers::e;
+				break;
+			}
+			else
+			{
+				res = (float_t)std::numbers::phi; // Golden ratio constant
+				break;
+			}
+		case 2: 
 			res = std::stof(str);
 			break;
-		case 2: // Convert from string fraction to int
+		case 3: // Convert fraction string to number
 			fraction = numberRepresentations::stringToFrac(str);
 			res = (float_t)fraction.getNumerator() / fraction.getDenominator();
 			break;
-		case 3: // Convert from string hexadecimal number to int
+		case 4: // Convert hexadecimal string number to number
 			str = str.substr(2);
 			res = (float_t)std::stoi(str, nullptr, 16);
 			break;
-		case 4: // leave operation
+		case 5: // leave operation
 			break;
-		case 5: // Convert from string roman numeral to int
-			// TO-DO
+		case 6: // Convert roman numeral string to number
+			roman = numberRepresentations::RomanNumeral(str);
+			res = (float_t)numberRepresentations::stringToRoman(str);
 			break;
-		case 6:
+		case 7:
 			res = (float_t)std::stoi(str);
 			break;
 		default:
 			break;
 		}
+
 		return res;
 	}
 
-	bool isFraction(char chars[])
+	void CalcBrain::p_clearStack()
 	{
-		return isdigit(chars[1]) && isdigit(chars[2]);
+		while (!m_stack->empty())
+			m_stack->pop();
+	}
+
+	CalcBrain::opCode CalcBrain::p_getCode(std::string& str)
+	{
+		if (str == "+") return plus;
+		if (str == "-") return minus;
+		if (str == "*") return multiply;
+		if (str == "/") return divide;
+		if (str == "abs") return absolute;
+		if (str == "pow") return power;
+		if (str == "sqrt") return squareRoot;
+		if (str == "cbrt") return cubicRoot;
+		if (str == "fac") return factorial;
+		if (str == "sin") return sinus;
+		if (str == "cos") return cosinus;
+		if (str == "tan") return tangent;
+		if (str == "cotan") return cotangent;
+		else
+			throw std::runtime_error("This operation is not implemented yet!!");
 	}
 
 	bool isRomanNumeral(char c)
@@ -250,9 +351,11 @@ namespace prefixCalculator
 	{
 		return c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F';
 	}
-}
 
-bool isFraction(char chars[])
-{
-	return false;
+	float_t fac(float_t num)
+	{
+		if (num == 0)
+			return 1;
+		return num * fac(num - 1);
+	}
 }

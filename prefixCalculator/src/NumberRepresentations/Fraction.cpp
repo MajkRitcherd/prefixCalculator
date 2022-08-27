@@ -68,12 +68,22 @@ namespace numberRepresentations
 		return Fraction(numerator * frac.denominator, denominator * frac.numerator);
 	}
 
-	// TO-DO
-	//	Find the lowest common multiple then compare numbers in numerator
-	//Fraction Fraction::operator<=>(const Fraction& frac) const
-	//{
+	// Returns -1 when lhs < rhs
+	//			1 when lhs > rhs
+	//			0 when lhs = rhs
+	int32_t Fraction::operator<=>(const Fraction& frac) const
+	{
+		int32_t commonMultiple = this->denominator * frac.getDenominator();
+		int32_t dividedThis = commonMultiple / this->denominator;
+		int32_t dividedFrac = commonMultiple / frac.getDenominator();
 
-	//}
+		if (dividedThis * this->numerator < dividedFrac * frac.getNumerator())
+			return (int32_t) -1;
+		else if (dividedThis * this->numerator > dividedFrac * frac.getNumerator())
+			return (int32_t) 1;
+		else
+			return (int32_t) 0;
+	}
 
 	void Fraction::setNumerator(int32_t num)
 	{

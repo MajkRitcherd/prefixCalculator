@@ -6,11 +6,12 @@ namespace prefixCalculator
 	{
 		m_patterns.insert(std::pair<std::string, std::regex>("wholeNumber", std::regex("^[-|+]?\\d+$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("floatNumber", std::regex("^[-|+]?\\d+\\.\\d+$")));
-		m_patterns.insert(std::pair<std::string, std::regex>("operation", std::regex("^[\\+|\\-|\\*|/]{1}$")));
+		m_patterns.insert(std::pair<std::string, std::regex>("operation", std::regex("^[\\+|\\-|\\*|/]|(abs|pow|sqrt|cbrt|fac|sin|cos|tan|cotan){1}$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("binaryNumber", std::regex("0b[0-1]+")));
 		m_patterns.insert(std::pair<std::string, std::regex>("hexadecimalNumber", std::regex("0x[\\dA-F]+")));
 		m_patterns.insert(std::pair<std::string, std::regex>("fraction", std::regex("^[-|+]?\\d+/[-|+]?\\d+$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("romanNumeral", std::regex("[I|V|X|L|C|D|M]+")));
+		m_patterns.insert(std::pair<std::string, std::regex>("constants", std::regex("(pi|e|phi)")));
 	}
 
 	RegexCheck::~RegexCheck()

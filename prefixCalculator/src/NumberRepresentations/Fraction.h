@@ -4,11 +4,11 @@
 
 namespace numberRepresentations
 {
-//========================================================================//
-//																		  //
-//			Class representing fraction with operations			          //
-//																		  //
-//========================================================================//
+//========================================================================
+//																		  
+//			Class representing fraction with operations			          
+//																		  
+//========================================================================
 	class Fraction
 	{
 	public:
@@ -22,7 +22,7 @@ namespace numberRepresentations
 		Fraction operator-(const Fraction& frac) const;
 		Fraction operator*(const Fraction& frac) const;
 		Fraction operator/(const Fraction& frac) const;
-		Fraction operator<=>(const Fraction& frac1) const;
+		int32_t operator<=>(const Fraction& frac1) const;
 
 	private:
 		void setNumerator(int32_t num);

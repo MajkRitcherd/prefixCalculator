@@ -29,7 +29,9 @@ namespace prefixCalculator
 				"\nAlse it can be Fraction, positive or negative, e.g. 4/5, -2/3, etc." \
 				"\nBinary number, only positive, e.g. 0b01101" \
 				"\nHexadecimal number, only positive, e.g. 0xF1A" \
-				"\nRoman numeral, only positive exists, e.g. I, X, L, etc." << endl;
+				"\nRoman numeral, only positive exists, e.g. I, X, L, etc." \
+				"\nList of operations: +, -, *, /, abs, pow, sqrt, cbrt, fac, sin, cos, tan, cotan" \
+				"\n+, -, *, /, pow require 2 numbers, others require 1 number." << endl;
 		cout << m_separationLine << endl;
 	}
 

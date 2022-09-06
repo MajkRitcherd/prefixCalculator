@@ -2,7 +2,7 @@
 
 #include "../Pch.h"
 
-namespace numberRepresentations
+namespace numRep
 {
 //========================================================================
 //																		  

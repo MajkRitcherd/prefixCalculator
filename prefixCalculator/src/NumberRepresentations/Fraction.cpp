@@ -1,6 +1,6 @@
 #include "Fraction.h"
 
-namespace numberRepresentations
+namespace numRep
 {
 	Fraction::Fraction(int32_t num, int32_t den)
 	{

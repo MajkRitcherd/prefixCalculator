@@ -25,13 +25,39 @@ namespace prefixCalculator
 		cout << endl << m_separationLine << endl;
 		cout << "To see history of results, enter '-h/-H'" \
 				"\nTo clear the history, enter '-c/-C'" \
+				"\nTo show mathematical operations, enter '-io/-IO'" \
 				"\nInput can be any real number, positive or negative, e.g. 5, -2.123, etc." \
 				"\nAlse it can be Fraction, positive or negative, e.g. 4/5, -2/3, etc." \
 				"\nBinary number, only positive, e.g. 0b01101" \
 				"\nHexadecimal number, only positive, e.g. 0xF1A" \
-				"\nRoman numeral, only positive exists, e.g. I, X, L, etc." \
-				"\nList of operations: +, -, *, /, abs, pow, sqrt, cbrt, fac, sin, cos, tan, cotan" \
-				"\n+, -, *, /, pow require 2 numbers, others require 1 number." << endl;
+				"\nRoman numeral, only positive exists, e.g. I, X, L, etc." << endl;
+		cout << m_separationLine << endl;
+	}
+
+	void Display::displayOperators()
+	{
+		cout << endl << m_separationLine << endl;
+		cout << "All possible operations:" \
+			"\n  Arithmetic: +, -, *, /" \
+			"\n  Algebra: pow, abs, sqrt, cbrt, fac" \
+			"\n  Goniometric: sin, cos, tan, cotan" \
+			"\n  Other: sum, prod" \
+			"\n For further information, check documentation!" << endl;
+		cout << m_separationLine << endl;
+	}
+
+	void Display::showHistory(Queue::LifoQueue<float_t>* history)
+	{
+		cout << endl << m_separationLine << endl;
+		cout << "History is:\n";
+		for (int i = 0; i < MAX_HISTORY; i++)
+		{
+			cout << "---" << endl;
+			if ((*history)[i] == std::numeric_limits<float_t>::max())
+				cout << "NaN" << endl;
+			else
+				cout << (*history)[i] << '\n';
+		}
 		cout << m_separationLine << endl;
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Pch.h"
+#include "../Queue/LifoQueue.h"
 
 namespace prefixCalculator
 {
@@ -14,6 +15,8 @@ namespace prefixCalculator
 
 		void displayResult(float_t& number);
 		void displayInfo();
+		void displayOperators();
+		void showHistory(Queue::LifoQueue<float_t>* history);
 		void showFirstHelp();
 
 	private:

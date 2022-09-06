@@ -1,6 +1,6 @@
 #include "RomanNumeral.h"
 
-namespace numberRepresentations
+namespace numRep
 {
 	RomanNumeral::RomanNumeral()
 		: m_number(1) {};

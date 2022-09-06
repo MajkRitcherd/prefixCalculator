@@ -6,7 +6,7 @@ namespace prefixCalculator
 	{
 		m_patterns.insert(std::pair<std::string, std::regex>("wholeNumber", std::regex("^[-|+]?\\d+$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("floatNumber", std::regex("^[-|+]?\\d+\\.\\d+$")));
-		m_patterns.insert(std::pair<std::string, std::regex>("operation", std::regex("^[\\+|\\-|\\*|/]|(abs|pow|sqrt|cbrt|fac|sin|cos|tan|cotan){1}$")));
+		m_patterns.insert(std::pair<std::string, std::regex>("operation", std::regex("^[\\+|\\-|\\*|/]|(abs|pow|sqrt|cbrt|fac|log|ln|mod|sin|cos|tan|cotan|sum|prod){1}$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("binaryNumber", std::regex("0b[0-1]+")));
 		m_patterns.insert(std::pair<std::string, std::regex>("hexadecimalNumber", std::regex("0x[\\dA-F]+")));
 		m_patterns.insert(std::pair<std::string, std::regex>("fraction", std::regex("^[-|+]?\\d+/[-|+]?\\d+$")));

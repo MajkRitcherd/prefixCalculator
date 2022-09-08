@@ -9,19 +9,16 @@ Roman numerals are not implemented yet.
 
 ## How-to build
 
-Open **command prompt** where is premake5.exe located.
-Type in: "premake5.exe vs2022" wihtout quotes and hit **Enter**.
-This will build project for Visual Studio 20xx (use your version of Visual Studio)
-For GMake, Xcode, CodeLite, see [Using Premake | Premake](https://premake.github.io/docs/Using-Premake).
+Download or clone this code and then run GenerateProject.bat file to generate vs solution.
 
 ## Future
 
 - Graphical User Interface (GUI)
-- More mathematical operations 
+- [✓] More mathematical operations 
 - [✓] Constants 
 - More number representations
 - Save expressions, results
-- Currency
+- [✓] Currency
 - Any suggestions?
 
 ## Documentation

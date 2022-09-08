@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Pch.h"
+#include <cstdint>
+#include <string>
 
 namespace numRep
 {
@@ -17,17 +18,17 @@ namespace numRep
 		RomanNumeral(uint32_t number);
 		RomanNumeral(std::string& str);
 
-		RomanNumeral operator+(RomanNumeral& num);
-		RomanNumeral operator-(RomanNumeral& num);
-		RomanNumeral operator*(RomanNumeral& num);
-		RomanNumeral operator/(RomanNumeral& num);
-		int32_t operator<=>(RomanNumeral & num);
+		RomanNumeral operator+(RomanNumeral& num) const;
+		RomanNumeral operator-(RomanNumeral& num) const;
+		RomanNumeral operator*(RomanNumeral& num) const;
+		RomanNumeral operator/(RomanNumeral& num) const;
+		int32_t operator<=>(RomanNumeral & num) const;
 
-		uint32_t getRomanNumeral() { return m_number; }
+		uint32_t getRomanNumeral() const { return m_number; }
 
 	private:
-		uint32_t p_getNumber(std::string& str);
-		uint32_t p_getDigit(char c);
+		uint32_t p_getNumber(std::string& str) const;
+		uint32_t p_getDigit(char c) const;
 
 	private:
 		uint32_t m_number;

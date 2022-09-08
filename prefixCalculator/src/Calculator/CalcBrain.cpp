@@ -1,22 +1,18 @@
 #include "CalcBrain.h"
 #include "../NumberRepresentations/Fraction.h"
 #include "../NumberRepresentations/RomanNumeral.h"
+#include <numbers>
 
 
 namespace prefixCalculator
 {
-// TO-DO
-// Check input for roman numerals, no more than 3 same digits
-
 	CalcBrain::CalcBrain()
 	{
-		m_history = new Queue::LifoQueue<float_t>;
-		float_t limit = std::numeric_limits<float_t>::max();
-		for (int i = 0; i < MAX_HISTORY; i++)
-			m_history->push(limit);
+		m_history = new Queue::LifoQueue<double_t>;
+		m_history->clear();
 
 		m_result = 0;
-		m_stack = new std::stack<float_t>;
+		m_stack = new std::stack<double_t>;
 		m_stopRunning = true;
 		
 		m_regexCheck = new RegexCheck();
@@ -24,6 +20,7 @@ namespace prefixCalculator
 
 	CalcBrain::~CalcBrain()
 	{
+	
 	}
 
 	void CalcBrain::run(Display* display)
@@ -41,10 +38,20 @@ namespace prefixCalculator
 			copyOfInput = input;
 			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), ' '), copyOfInput.end());
 			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), '\t'), copyOfInput.end());
-			std::transform(copyOfInput.begin(), copyOfInput.end(), copyOfInput.begin(), [](unsigned char c) {return std::tolower(c); });
+			std::transform(copyOfInput.begin(), copyOfInput.end(), copyOfInput.begin(), [](unsigned char c) { return std::tolower(c); });
 
 			// Checks for control commands, otherwise calculates
-			if (copyOfInput == "-i")
+			if (copyOfInput == "-c")
+			{
+				m_history->clear();
+				std::cout << "History cleared!!" << std::endl;
+				continue;
+			}
+			else if (copyOfInput == "-h")			{
+				m_display->showHistory(m_history);
+				continue;
+			}
+			else if (copyOfInput == "-i")
 			{
 				m_display->displayInfo();
 				continue;
@@ -54,14 +61,11 @@ namespace prefixCalculator
 				m_display->displayOperators();
 				continue;
 			}
-			else if (copyOfInput == "-h")			{
-				m_display->showHistory(m_history);
-				continue;
-			}
-			else if (copyOfInput == "-c")
+			else if (copyOfInput == "-u")
 			{
-				m_history->clear();
-				std::cout << "History cleared" << std::endl;
+				std::cout << "Updating";
+				utilities::UpdateJson();
+				std::cout << "Currencies were updated!" << std::endl;
 				continue;
 			}
 			else if (copyOfInput == "-q")
@@ -83,10 +87,13 @@ namespace prefixCalculator
 		m_stopRunning = !m_stopRunning;
 	}
 
-	float_t CalcBrain::p_calculate(float_t num1, float_t num2, std::string& op)
+	double_t CalcBrain::p_calculate(double_t num1, double_t num2, std::string& op)
 	{
 		using namespace numRep::oper;
-		float_t res = 0.0;
+		std::string curr[4] = { "eur", "czk", "gbp", "usd" };
+		std::string rate = "rate";
+		std::string inverseRate = "inverseRate";
+		double_t res = 0.0;
 		opCode code = getCode(op);
 
 		switch (code)
@@ -139,6 +146,42 @@ namespace prefixCalculator
 		case cotangent:
 			res = cos(num1) / sin(num1);
 			break;
+		case czToEu:
+			res = utilities::getRate(curr[0], curr[1], inverseRate) * num1;
+			break;
+		case czToDo:
+			res = utilities::getRate(curr[1], curr[3], rate) * num1;
+			break;
+		case czToPo:
+			res = utilities::getRate(curr[1], curr[2], rate) * num1;
+			break;
+		case euToCz:
+			res = utilities::getRate(curr[0], curr[1], rate) * num1;
+			break;
+		case euToDo:
+			res = utilities::getRate(curr[0], curr[3], rate) * num1;
+			break;
+		case euToPo:
+			res = utilities::getRate(curr[0], curr[2], rate) * num1;
+			break;
+		case doToCz:
+			res = utilities::getRate(curr[1], curr[3], inverseRate) * num1;
+			break;
+		case doToEu:
+			res = utilities::getRate(curr[0], curr[3], inverseRate) * num1;
+			break;
+		case doToPo:
+			res = utilities::getRate(curr[3], curr[2], rate) * num1;
+			break;
+		case poToCz:
+			res = utilities::getRate(curr[1], curr[2], inverseRate)* num1;
+			break;
+		case poToEu:
+			res = utilities::getRate(curr[0], curr[2], inverseRate) * num1;
+			break;
+		case poToDo:
+			res = utilities::getRate(curr[3], curr[2], inverseRate)* num1;
+			break; 
 		default:
 			throw std::runtime_error("Operation is unknown!!");
 		}
@@ -152,10 +195,6 @@ namespace prefixCalculator
 		std::string number;
 		int start, size = 0;
 		int i = (int)str.length() - 1;
-
-		//if (i == 0)
-		//	if (str[0] >= 0 && str[0] <= 47 && str[0] >= 58 && str[0] <= 255)
-		//		return false;
 
 		// Checks string and calculates the result
 		while (i >= -1)
@@ -190,9 +229,7 @@ namespace prefixCalculator
 						if (start == 0 && m_stack->size() > 1)
 							return false;
 					}
-					//else if ((!(numRep::oper::isOperator(number) || numRep::oper::isSingleOperator(number) || numRep::oper::isAllOperator(number)) && isINegative))
-						//return false;
-					else if (numRep::oper::isAllOperator(number) && !isINegative)
+					else if ((numRep::oper::isAllOperator(number) && !isINegative) || !checkRomanNumeral(m_regexCheck, number))
 					{
 						return false;
 					}
@@ -214,7 +251,7 @@ namespace prefixCalculator
 				i--;
 				continue;
 			}
-			else if (checkBinOrHex(c, str[i - 1]))
+			else if (isBinOrHex(c, str[i - 1]))
 			{
 				size += 2;
 				i -= 2;
@@ -232,7 +269,7 @@ namespace prefixCalculator
 	void CalcBrain::p_stackComputation(std::string& op)
 	{
 		using namespace numRep::oper;
-		float_t num1 = 0, num2 = 0, res = 0;
+		double_t num1 = 0, num2 = 0, res = 0;
 
 		if (!isAllOperator(op))
 		{
@@ -268,9 +305,9 @@ namespace prefixCalculator
 		}
 	}
 
-	float_t CalcBrain::p_stringToFloat(std::string& str, const std::string& key)
+	double_t CalcBrain::p_stringToFloat(std::string& str, const std::string& key)
 	{
-		float_t res = 0;
+		double_t res = 0;
 		int type = 0;
 		auto patterns = m_regexCheck->getKeys();
 		numRep::Fraction fraction;
@@ -286,22 +323,22 @@ namespace prefixCalculator
 		{
 		case 0: // Convert binary string number to number
 			str = str.substr(2);
-			res = (float_t)std::stoi(str, nullptr, 2);
+			res = (double_t)std::stoi(str, nullptr, 2);
 			break;
 		case 1: // Convert constant to number
 			if (str == "pi")
 			{
-				res = (float_t)std::numbers::pi;
+				res = (double_t)std::numbers::pi;
 				break;
 			}
 			else if (str == "e")
 			{
-				res = (float_t)std::numbers::e;
+				res = (double_t)std::numbers::e;
 				break;
 			}
 			else
 			{
-				res = (float_t)std::numbers::phi; // Golden ratio constant
+				res = (double_t)std::numbers::phi; // Golden ratio constant
 				break;
 			}
 		case 2: 
@@ -309,20 +346,20 @@ namespace prefixCalculator
 			break;
 		case 3: // Convert fraction string to number
 			fraction = numRep::stringToFrac(str);
-			res = (float_t)fraction.getNumerator() / fraction.getDenominator();
+			res = (double_t)fraction.getNumerator() / fraction.getDenominator();
 			break;
 		case 4: // Convert hexadecimal string number to number
 			str = str.substr(2);
-			res = (float_t)std::stoi(str, nullptr, 16);
+			res = (double_t)std::stoi(str, nullptr, 16);
 			break;
 		case 5: // leave operation
 			break;
 		case 6: // Convert roman numeral string to number
 			roman = numRep::RomanNumeral(str);
-			res = (float_t)numRep::stringToRoman(str);
+			res = (double_t)numRep::stringToRoman(str);
 			break;
 		case 7:
-			res = (float_t)std::stoi(str);
+			res = (double_t)std::stoi(str);
 			break;
 		default:
 			break;
@@ -342,33 +379,43 @@ namespace prefixCalculator
 
 	bool checkConditions(char& c)
 	{
-		char allowedChars[25] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'w', '+', '-', '*', '/', '.'};
-		for (int i = 0; i < 25; i++)
+		char allowedChars[26] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'w', 'z', '+', '-', '*', '/', '.'};
+		for (int i = 0; i < 26; i++)
 			if (c == allowedChars[i])
 				return true;
-		return isdigit(c) || prefixCalculator::isHexadecimalCharacter(c) ||
-			prefixCalculator::isRomanNumeral(c) || false;
+		return isdigit(c) || prefixCalculator::isHexadecimalChar(c) ||
+			prefixCalculator::isRomanNumeralChar(c) || false;
 	}
 
-	bool checkBinOrHex(char& c, char& num)
+	bool checkRomanNumeral(RegexCheck *regCheck, std::string& str)
 	{
-		return (c == 'b' || c == 'x') && num == '0';
+		auto iter = regCheck->checkPattern(str);
+		if (regCheck->isEnd(iter))
+			return false;
+
+		return std::regex_match(str, iter->second);
 	}
 
-	bool isRomanNumeral(char c)
+	bool isRomanNumeralChar(char c)
 	{
 		return c == 'I' || c == 'V' || c == 'X' || c == 'L' || c == 'C' || c == 'D' || c == 'M';
 	}
 
-	bool isHexadecimalCharacter(char c)
+	bool isHexadecimalChar(char c)
 	{
 		return c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F';
 	}
 
-	float_t fac(float_t num)
+	bool isBinOrHex(char& c, char& num)
+	{
+		return (c == 'b' || c == 'x') && num == '0';
+	}
+
+	double_t fac(double_t num)
 	{
 		if (num == 0)
 			return 1;
 		return num * fac(num - 1);
 	}
+
 }

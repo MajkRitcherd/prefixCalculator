@@ -5,7 +5,6 @@
 #endif // !MAX_HISTORY
 
 
-#include "../Pch.h"
 #include "CalcBrain.h"
 #include "Display.h"
 

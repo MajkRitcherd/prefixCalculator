@@ -11,7 +11,7 @@ namespace numRep
 	RomanNumeral::RomanNumeral(std::string& str)
 		: m_number(p_getNumber(str)) {};
 
-	uint32_t RomanNumeral::p_getNumber(std::string& str) const
+	uint32_t RomanNumeral::p_getNumber(std::string& str)
 	{
 		uint32_t res = 0;
 
@@ -38,7 +38,7 @@ namespace numRep
 		return res;
 	}
 
-	uint32_t RomanNumeral::p_getDigit(char c) const
+	uint32_t RomanNumeral::p_getDigit(char c)
 	{
 		uint32_t res = 0;
 
@@ -72,27 +72,27 @@ namespace numRep
 		return res;
 	}
 
-	RomanNumeral RomanNumeral::operator+(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator+(RomanNumeral& num)
 	{
 		return RomanNumeral(this->m_number + num.m_number);
 	}
 
-	RomanNumeral RomanNumeral::operator-(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator-(RomanNumeral& num)
 	{
 		return RomanNumeral(this->m_number - num.m_number);
 	}
 
-	RomanNumeral RomanNumeral::operator*(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator*(RomanNumeral& num)
 	{
 		return RomanNumeral(this->m_number * num.m_number);
 	}
 
-	RomanNumeral RomanNumeral::operator/(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator/(RomanNumeral& num)
 	{
 		return RomanNumeral((uint32_t)round(this->m_number / num.m_number));
 	}
 
-	int32_t RomanNumeral::operator<=>(RomanNumeral& num) const
+	int32_t RomanNumeral::operator<=>(RomanNumeral& num)
 	{
 		if (this->m_number < num.m_number)
 			return -1;

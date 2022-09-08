@@ -4,6 +4,4 @@ int main()
 {
 	prefixCalculator::Calculator calc;
 	calc.run();
-
-	return 0;
 }

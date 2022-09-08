@@ -1,5 +1,4 @@
 #include "Operations.h"
-#include <stdexcept>
 
 namespace numRep
 {
@@ -26,7 +25,7 @@ namespace numRep
 
 			for (int i = 0; i < ALLCOUNT; i++)
 				if (strAllCode[i] == str)
-					return i + 28;
+					return i + 16;
 			
 			return -1;
 		}

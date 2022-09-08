@@ -13,7 +13,7 @@ namespace prefixCalculator
 	{
 	}
 
-	void Display::displayResult(double_t& number)
+	void Display::displayResult(float_t& number)
 	{
 		m_result = &number;
 		std::cout << *m_result << std::endl;
@@ -46,14 +46,14 @@ namespace prefixCalculator
 		cout << m_separationLine << endl;
 	}
 
-	void Display::showHistory(Queue::LifoQueue<double_t>* history)
+	void Display::showHistory(Queue::LifoQueue<float_t>* history)
 	{
 		cout << endl << m_separationLine << endl;
 		cout << "History is:\n";
 		for (int i = 0; i < MAX_HISTORY; i++)
 		{
 			cout << "---" << endl;
-			if ((*history)[i] == std::numeric_limits<double_t>::max())
+			if ((*history)[i] == std::numeric_limits<float_t>::max())
 				cout << "NaN" << endl;
 			else
 				cout << (*history)[i] << '\n';

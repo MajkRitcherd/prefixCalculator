@@ -17,11 +17,11 @@ For GMake, Xcode, CodeLite, see [Using Premake | Premake](https://premake.github
 ## Future
 
 - Graphical User Interface (GUI)
-- [✓] More mathematical operations 
+- More mathematical operations 
 - [✓] Constants 
 - More number representations
 - Save expressions, results
-- [✓] Currency
+- Currency
 - Any suggestions?
 
 ## Documentation

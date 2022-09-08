@@ -1,0 +1,13 @@
+﻿  CalcBrain.cpp
+  Calculator.cpp
+  Display.cpp
+  RegexCheck.cpp
+  Main.cpp
+  Fraction.cpp
+  Operations.cpp
+  RomanNumeral.cpp
+  FileUtil.cpp
+  JsonUtil.cpp
+  Generování kódu...
+D:\dev\GitHub\prefixCalculator\prefixCalculator\src\NumberRepresentations\Fraction.cpp(154): warning C4717: numRep::operator<<: Rekurzivní pro všechny cesty ovládacích prvků; funkce způsobí za běhu přetečení zásobníku.
+  prefixCalculator.vcxproj -> D:\dev\GitHub\prefixCalculator\bin\Debug\prefixCalculator.exe

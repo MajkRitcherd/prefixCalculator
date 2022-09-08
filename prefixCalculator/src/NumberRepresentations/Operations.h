@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Pch.h"
+#include <string>
 
 #ifndef SINGLECOUNT
-#define SINGLECOUNT 10
+#define SINGLECOUNT 22
 #endif // !OPERCOUNTSINGLE
 
 #ifndef TWOCOUNT
@@ -19,16 +19,16 @@ namespace numRep
 	// Contains all available mathematical operations
 	namespace oper
 	{
-		const std::string str1Code[SINGLECOUNT] = { "abs", "sqrt", "cbrt", "fac", "log", "ln", "sin", "cos", "tan", "cotan" };
+		const std::string str1Code[SINGLECOUNT] = { "abs", "sqrt", "cbrt", "fac", "log", "ln", "sin", "cos", "tan", \
+													"cotan", "cz-eu", "cz-do", "cz-po", "eu-cz", "eu-do", "eu-po", \
+													"do-cz", "do-eu", "do-po", "po-cz", "po-eu", "po-do"};
 
-		const std::string str2Code[TWOCOUNT] = { "+", "-", "*", "/", "pow", "mod" };
+		const std::string str2Code[TWOCOUNT] = { "+", "-", "*", "/", "pow", "mod"};
 
 		const std::string strAllCode[ALLCOUNT] = { "sum", "prod" };
 
 		enum opCode
 		{
-			// MAYBE Boolean logic?
-			// 
 			// Arithmetic
 			plus, minus, multiply, divide,
 
@@ -37,6 +37,9 @@ namespace numRep
 
 			// Goniometric operation
 			sinus, cosinus, tangent, cotangent,
+
+			// Currency convertion
+			czToEu, czToDo, czToPo, euToCz, euToDo, euToPo, doToCz, doToEu, doToPo, poToCz, poToEu, poToDo,
 
 			summation, product
 		};

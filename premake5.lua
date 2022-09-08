@@ -15,6 +15,11 @@ project "prefixCalculator"
 	targetdir ("bin/%{cfg.buildcfg}")
 	objdir ("bin-int/%{cfg.buildcfg}")
 
+	defines
+	{
+		"_CRT_NO_SECURE_WARNINGS"
+	}
+
 	files
 	{
 		"%{prj.name}/src/**.h",

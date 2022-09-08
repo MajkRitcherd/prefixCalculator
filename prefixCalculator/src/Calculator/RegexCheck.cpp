@@ -6,11 +6,14 @@ namespace prefixCalculator
 	{
 		m_patterns.insert(std::pair<std::string, std::regex>("wholeNumber", std::regex("^[-|+]?\\d+$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("floatNumber", std::regex("^[-|+]?\\d+\\.\\d+$")));
-		m_patterns.insert(std::pair<std::string, std::regex>("operation", std::regex("^[\\+|\\-|\\*|/]|(abs|pow|sqrt|cbrt|fac|log|ln|mod|sin|cos|tan|cotan|sum|prod){1}$")));
+		m_patterns.insert(std::pair<std::string, std::regex>("operation", std::regex("^[\\+|\\-|\\*|/]|" \
+																					 "(#|abs|pow|sqrt|cbrt|fac|log|ln|mod|sin|cos|" \
+																					 "tan|cotan|sum|prod|cz-eu|cz-do|cz-po|eu-cz|eu-do" \
+																					 "|eu-po|do-cz|do-eu|do-po|po-cz|po-eu|po-do){1}$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("binaryNumber", std::regex("0b[0-1]+")));
 		m_patterns.insert(std::pair<std::string, std::regex>("hexadecimalNumber", std::regex("0x[\\dA-F]+")));
 		m_patterns.insert(std::pair<std::string, std::regex>("fraction", std::regex("^[-|+]?\\d+/[-|+]?\\d+$")));
-		m_patterns.insert(std::pair<std::string, std::regex>("romanNumeral", std::regex("[I|V|X|L|C|D|M]+")));
+		m_patterns.insert(std::pair<std::string, std::regex>("romNumFollowsRules", std::regex("^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")));
 		m_patterns.insert(std::pair<std::string, std::regex>("constants", std::regex("(pi|e|phi)")));
 	}
 

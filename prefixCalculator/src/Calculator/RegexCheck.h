@@ -1,6 +1,9 @@
 #pragma once
 
-#include "../Pch.h"
+#include <vector>
+#include <map>
+#include <string>
+#include <regex>
 
 namespace prefixCalculator
 {

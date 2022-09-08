@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../Pch.h"
 #include "../Queue/LifoQueue.h"
+
+#include <iostream>
 
 namespace prefixCalculator
 {
@@ -13,14 +14,14 @@ namespace prefixCalculator
 		~Display();
 
 
-		void displayResult(float_t& number);
+		void displayResult(double_t& number);
 		void displayInfo();
 		void displayOperators();
-		void showHistory(Queue::LifoQueue<float_t>* history);
+		void showHistory(Queue::LifoQueue<double_t>* history);
 		void showFirstHelp();
 
 	private:
 		std::string m_separationLine;
-		float_t* m_result;
+		double_t* m_result;
 	};
 }

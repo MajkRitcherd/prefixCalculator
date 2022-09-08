@@ -1,6 +1,11 @@
 #pragma once
 
-#include "../Pch.h"
+#include <limits>
+#include <cstdint>
+
+#ifndef MAX_HISTORY
+	#define MAX_HISTORY 10
+#endif // !MAX_HISTORY
 
 namespace Queue
 {
@@ -24,7 +29,7 @@ namespace Queue
 		void clear()
 		{
 			for (int i = 0; i < MAX_HISTORY; i++)
-				m_queue[i] = std::numeric_limits<float_t>::max();
+				m_queue[i] = std::numeric_limits<double_t>::max();
 		};
 
 	private:

@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="MKWhite.png" width=50% height=50% align="center">
+</p>
+
 # Prefix Calculator
 
 Works with positive, negative numbers, also with binary and hexadecimal numbers and with Fractions.

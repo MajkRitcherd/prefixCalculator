@@ -40,7 +40,8 @@ namespace numRep
 
 			// Currency convertion
 			czToEu, czToDo, czToPo, euToCz, euToDo, euToPo, doToCz, doToEu, doToPo, poToCz, poToEu, poToDo,
-
+			
+			// Others
 			summation, product
 		};
 

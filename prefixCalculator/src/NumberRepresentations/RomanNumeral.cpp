@@ -72,34 +72,34 @@ namespace numRep
 		return res;
 	}
 
-	RomanNumeral RomanNumeral::operator+(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator+(const RomanNumeral& num) const
 	{
 		return RomanNumeral(this->m_number + num.m_number);
 	}
 
-	RomanNumeral RomanNumeral::operator-(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator-(const RomanNumeral& num) const
 	{
 		return RomanNumeral(this->m_number - num.m_number);
 	}
 
-	RomanNumeral RomanNumeral::operator*(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator*(const RomanNumeral& num) const
 	{
 		return RomanNumeral(this->m_number * num.m_number);
 	}
 
-	RomanNumeral RomanNumeral::operator/(RomanNumeral& num) const
+	RomanNumeral RomanNumeral::operator/(const RomanNumeral& num) const
 	{
 		return RomanNumeral((uint32_t)round(this->m_number / num.m_number));
 	}
 
-	int32_t RomanNumeral::operator<=>(RomanNumeral& num) const
-	{
+	std::strong_ordering RomanNumeral::operator<=>(const RomanNumeral& num) const
+	{	
 		if (this->m_number < num.m_number)
-			return -1;
+			return std::strong_ordering::less;
 		else if (this->m_number > num.m_number)
-			return 1;
+			return std::strong_ordering::greater;
 		else
-			return 0;
+			return std::strong_ordering::equal;
 	}
 
 	uint32_t stringToRoman(std::string& str)

@@ -1,4 +1,5 @@
 #include "Display.h"
+#include <iomanip>
 
 using std::cout, std::endl;
 
@@ -16,62 +17,85 @@ namespace prefixCalculator
 	void Display::displayResult(double_t& number)
 	{
 		m_result = &number;
-		std::cout << *m_result << std::endl;
+		std::cout << std::setprecision(15) << *m_result << std::endl;
 	}
 
 	void Display::displayInfo()
 	{
-		// to show history enter h
-		cout << endl << m_separationLine << endl;
-		cout << "To see history of results, enter '-h/-H'" \
-				"\nTo clear the history, enter '-c/-C'" \
-				"\nTo show mathematical operations, enter '-io/-IO'" \
-				"\nInput can be any real number, positive or negative, e.g. 5, -2.123, etc." \
-				"\nAlse it can be Fraction, positive or negative, e.g. 4/5, -2/3, etc." \
-				"\nBinary number, only positive, e.g. 0b01101" \
-				"\nHexadecimal number, only positive, e.g. 0xF1A" \
-				"\nRoman numeral, only positive exists, e.g. I, X, L, etc." << endl;
+		cout << m_separationLine << endl;
+		cout << "|                                    INFO                                      |" << endl;
+		cout << "|------------------------------------------------------------------------------|\n" \
+				"|                                                                              |\n"
+				"|  - To see history of results, enter '-h/-H'                                  |\n" \
+				"|  - To clear the history, enter '-c/-C'                                       |\n" \
+				"|  - To show mathematical operations, enter '-io/-IO'                          |\n" \
+				"|  - To update currency exchanges, enter '-u/-U'                               |\n";
+		cout << "|                                                                              |\n" \
+				"|                                                                              |\n" \
+				"| Input can be any real number, positive or negative, e.g. 5, -2.123, etc.     |\n" \
+				"| Alse it can be Fraction, positive or negative, e.g. 4/5, -2/3, etc.          |\n" \
+				"| Binary number, only positive, e.g. 0b01101                                   |\n" \
+				"| Hexadecimal number, only positive, e.g. 0xF1A                                |\n" \
+				"| Roman numeral, only positive exists, e.g. I, X, L, etc.                      |\n" \
+				"|                                                                              |\n";
 		cout << m_separationLine << endl;
 	}
 
 	void Display::displayOperators()
 	{
 		cout << endl << m_separationLine << endl;
-		cout << "All possible operations:" \
-			"\n  Arithmetic: +, -, *, /" \
-			"\n  Algebra: pow, abs, sqrt, cbrt, fac" \
-			"\n  Goniometric: sin, cos, tan, cotan" \
-			"\n  Other: sum, prod" \
-			"\n For further information, check documentation!" << endl;
+		cout << "|                                  OPERATOR                                    |" << endl;
+		cout << "|------------------------------------------------------------------------------|\n" \
+				"|                                                                              |\n";
+		cout << "| All possible operations are:                                                 |\n" \
+				"|    - Arithmetic: +, -, *, /                                                  |\n" \
+				"|    - Algebra: pow, abs, sqrt, cbrt, fac                                      |\n" \
+				"|    - Goniometric: sin, cos, tan, cotan                                       |\n" \
+				"|    - Currency: cz-eu, cz-do, cz-po, eu-cz, eu-do                             |\n" \
+				"|                eu-po, do-cz, do-eu, do-po, po-cz                             |\n" \
+				"|                po-eu, po-do                                                  |\n" \
+				"|    - Other: sum, prod                                                        |\n" \
+				"| For further information, check documentation!                                |\n" \
+				"|                                                                              |\n";
 		cout << m_separationLine << endl;
 	}
 
 	void Display::showHistory(Queue::LifoQueue<double_t>* history)
 	{
 		cout << endl << m_separationLine << endl;
-		cout << "History is:\n";
+		cout << "|                                  HISTORY                                     |\n" \
+				"|------------------------------------------------------------------------------|\n" \
+				"|                                                                              |\n";
 		for (int i = 0; i < MAX_HISTORY; i++)
 		{
-			cout << "---" << endl;
+			if(i != 0)
+				cout << "|------------------                                                            |" << endl;
 			if ((*history)[i] == std::numeric_limits<double_t>::max())
-				cout << "NaN" << endl;
+				cout << "| NaN                                                                          |" << endl;
 			else
-				cout << (*history)[i] << '\n';
+				cout << "| " << std::left << std::setfill(' ') << std::setw(77) << (*history)[i] << "|\n";
 		}
+		cout << "|                                                                              |\n";
 		cout << m_separationLine << endl;
 	}
 
 	void Display::showFirstHelp()
 	{
 		cout << m_separationLine << endl;
-		cout << "\t    Welcome to prefixCalculator!" << endl;
-		cout << m_separationLine << endl;
-		cout << "This calculator can work only with:" << endl;
-		cout << "\tWhole numbers (can be negative),\n\tFractions (can be negative), e.g. 4/5,\n\tRoman numerals, e.g. XVII,\
-			\n\tBinary numbers, e.g. 0b0101,\n\tHexadecimal numbers, e.g. 0xA5" << endl;
-		cout << "Be aware of Case sensitivity!! ('a' isn't same as 'A')" << endl;
-		cout << "\nFor more information enter '-i/-I'" << endl;
-		cout << "\nTo quit enter '-q/-Q'" << endl;
+		cout << "|                         Welcome to prefixCalculator!                         |\n" \
+				"|------------------------------------------------------------------------------|\n" \
+				"|                                                                              |\n" \
+				"| This calculator works with these number types:                               |\n" \
+				"|    - Whole numbers (can be negative)                                         |\n" \
+				"|    - Fractions (can be negative), e.g. 4/5, -2/3                             |\n" \
+				"|    - Roman numerals, e.g. XVII                                               |\n" \
+				"|    - Binary numbers, e.g. 0b0101                                             |\n" \
+				"|    - Hexadecimal numbers, e.g. 0xA5                                          |\n" \
+				"| Be aware of case sensitivity!! ('a' isn't same as 'A')                       |\n" \
+				"|                                                                              |\n" \
+				"| For more information, enter '-i/-I'                                          |\n" \
+				"| To quit enter '-q/-Q'                                                        |\n" \
+				"|                                                                              |\n";
 		cout << m_separationLine << endl;
 	}
 }

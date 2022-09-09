@@ -40,18 +40,5 @@ namespace prefixCalculator
 			else
 				return true;
 		}
-
-		bool UpdateFile(const wchar_t* wDest)
-		{
-			_bstr_t b(wDest);
-			const char* dest = b;
-
-			std::ofstream fileHandle(dest, std::ios::trunc | std::ios::out);
-			if (!fileHandle.is_open())
-				return false;
-			fileHandle << "AAA";
-			fileHandle.close();
-			return true;
-		}
 	}
 }

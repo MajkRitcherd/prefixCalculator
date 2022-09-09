@@ -23,7 +23,7 @@ namespace numRep
 		Fraction operator-(const Fraction& frac) const;
 		Fraction operator*(const Fraction& frac) const;
 		Fraction operator/(const Fraction& frac) const;
-		int32_t operator<=>(const Fraction& frac1) const;
+		std::strong_ordering operator<=>(const Fraction& frac1) const;
 
 	private:
 		void setNumerator(int32_t num);

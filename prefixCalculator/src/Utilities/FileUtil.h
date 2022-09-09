@@ -13,8 +13,6 @@ namespace prefixCalculator
 		std::fstream OpenFile(const wchar_t* dest, std::ios_base::openmode mode);
 
 		void CloseFile(std::fstream& file);
-
-		bool UpdateFile(const wchar_t* dest);
 		
 		bool DelFile(const wchar_t* dest);
 	}

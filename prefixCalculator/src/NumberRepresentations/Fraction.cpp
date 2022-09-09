@@ -71,18 +71,18 @@ namespace numRep
 	// Returns -1 when lhs < rhs
 	//			1 when lhs > rhs
 	//			0 when lhs = rhs
-	int32_t Fraction::operator<=>(const Fraction& frac) const
+	std::strong_ordering Fraction::operator<=>(const Fraction& frac) const
 	{
 		int32_t commonMultiple = this->denominator * frac.getDenominator();
 		int32_t dividedThis = commonMultiple / this->denominator;
 		int32_t dividedFrac = commonMultiple / frac.getDenominator();
 
 		if (dividedThis * this->numerator < dividedFrac * frac.getNumerator())
-			return (int32_t) -1;
+			return std::strong_ordering::less;
 		else if (dividedThis * this->numerator > dividedFrac * frac.getNumerator())
-			return (int32_t) 1;
+			return std::strong_ordering::greater;
 		else
-			return (int32_t) 0;
+			return std::strong_ordering::equal;
 	}
 
 	void Fraction::setNumerator(int32_t num)

@@ -18,11 +18,11 @@ namespace numRep
 		RomanNumeral(uint32_t number);
 		RomanNumeral(std::string& str);
 
-		RomanNumeral operator+(RomanNumeral& num) const;
-		RomanNumeral operator-(RomanNumeral& num) const;
-		RomanNumeral operator*(RomanNumeral& num) const;
-		RomanNumeral operator/(RomanNumeral& num) const;
-		int32_t operator<=>(RomanNumeral & num) const;
+		RomanNumeral operator+(const RomanNumeral& num) const;
+		RomanNumeral operator-(const RomanNumeral& num) const;
+		RomanNumeral operator*(const RomanNumeral& num) const;
+		RomanNumeral operator/(const RomanNumeral& num) const;
+		std::strong_ordering operator<=>(const RomanNumeral & num) const;
 
 		uint32_t getRomanNumeral() const { return m_number; }
 

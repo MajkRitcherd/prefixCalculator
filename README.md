@@ -4,8 +4,7 @@
 
 # Prefix Calculator
 
-Works with positive, negative numbers, also with binary and hexadecimal numbers and with Fractions.
-Roman numerals are not implemented yet.
+Works with positive, negative numbers, also with binary and hexadecimal numbers and with Fractions and Roman numerals.
 
 ## How-to build
 

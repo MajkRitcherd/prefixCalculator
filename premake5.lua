@@ -3,6 +3,7 @@ workspace "prefixCalculator"
 
 	configurations
 	{
+		"Education",
 		"Debug",
 		"Release"
 	}
@@ -25,6 +26,11 @@ project "prefixCalculator"
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
+
+	filter "Configurations:Education"
+		cppdialect "C++20"
+		defines { "EDUCATION" }
+		optimize "On"
 
 	filter "Configurations:Debug"
 		cppdialect "C++20"

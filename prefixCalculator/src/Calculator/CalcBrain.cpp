@@ -38,20 +38,10 @@ namespace prefixCalculator
 		{
 			std::getline(std::cin, input);
 			copyOfInput = input;
-			cc(copyOfInput);
 			copyOfInput = input;
 			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), ' '), copyOfInput.end());
 			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), '\t'), copyOfInput.end());
 			std::transform(copyOfInput.begin(), copyOfInput.end(), copyOfInput.begin(), [](unsigned char c) { return std::tolower(c); });
-
-			// This is not needed, I can do it with input
-			//
-			//std::string copyOfInput2;
-			//copyOfInput2 = input;
-			//copyOfInput2.erase(remove(copyOfInput2.begin(), copyOfInput2.end(), ' '), copyOfInput2.end());
-			//copyOfInput2.erase(remove(copyOfInput2.begin(), copyOfInput2.end(), '\t'), copyOfInput2.end());
-			//for (auto it = copyOfInput2.begin() + 1; it != copyOfInput2.end(); it += 2)
-			//	copyOfInput2.insert(it, ' ');
 
 			m_firstEducCalculation = true;
 
@@ -506,10 +496,5 @@ namespace prefixCalculator
 		if (num == 0)
 			return 1;
 		return num * fac(num - 1);
-	}
-
-	void cc(std::string& str)
-	{
-		str.erase(remove(str.begin()), str.end());
 	}
 }

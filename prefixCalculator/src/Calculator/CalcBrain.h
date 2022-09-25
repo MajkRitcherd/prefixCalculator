@@ -50,6 +50,5 @@ namespace prefixCalculator
 	bool isHexadecimalChar(char c);
 	bool isBinOrHex(char& c, char& num);
 	double_t fac(double_t num);
-	void cc(std::string& str);
 }
 

@@ -3,6 +3,7 @@
 #include "../Queue/LifoQueue.h"
 
 #include <iostream>
+#include <vector>
 
 namespace prefixCalculator
 {
@@ -19,6 +20,7 @@ namespace prefixCalculator
 		void displayOperators();
 		void showHistory(Queue::LifoQueue<double_t>* history);
 		void showFirstHelp();
+		void showSavedResults(std::vector<double_t>& vec);
 
 	private:
 		std::string m_separationLine;

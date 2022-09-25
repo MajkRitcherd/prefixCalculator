@@ -8,13 +8,13 @@ namespace prefixCalculator
 {
 	CalcBrain::CalcBrain()
 	{
+		m_result = 0;
+		m_stopRunning = true;
+		
 		m_history = new Queue::LifoQueue<double_t>;
 		m_history->clear();
 
-		m_result = 0;
-		m_stack = new std::stack<double_t>;
-		m_stopRunning = true;
-		
+		m_deque = new std::deque<double_t>;
 		m_regexCheck = new RegexCheck();
 	}
 
@@ -23,8 +23,10 @@ namespace prefixCalculator
 	
 	}
 
-	void CalcBrain::run(Display* display)
+	void CalcBrain::run(Display* display, bool education)
 	{
+		m_education = education;
+		m_firstEducCalculation = true;
 		m_display = display;
 		m_display->showFirstHelp();
 		std::string input, copyOfInput;
@@ -36,9 +38,22 @@ namespace prefixCalculator
 		{
 			std::getline(std::cin, input);
 			copyOfInput = input;
+			cc(copyOfInput);
+			copyOfInput = input;
 			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), ' '), copyOfInput.end());
 			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), '\t'), copyOfInput.end());
 			std::transform(copyOfInput.begin(), copyOfInput.end(), copyOfInput.begin(), [](unsigned char c) { return std::tolower(c); });
+
+			// This is not needed, I can do it with input
+			//
+			//std::string copyOfInput2;
+			//copyOfInput2 = input;
+			//copyOfInput2.erase(remove(copyOfInput2.begin(), copyOfInput2.end(), ' '), copyOfInput2.end());
+			//copyOfInput2.erase(remove(copyOfInput2.begin(), copyOfInput2.end(), '\t'), copyOfInput2.end());
+			//for (auto it = copyOfInput2.begin() + 1; it != copyOfInput2.end(); it += 2)
+			//	copyOfInput2.insert(it, ' ');
+
+			m_firstEducCalculation = true;
 
 			// Checks for control commands, otherwise calculates
 			if (copyOfInput == "-c")
@@ -59,6 +74,16 @@ namespace prefixCalculator
 			else if (copyOfInput == "-io")
 			{
 				m_display->displayOperators();
+				continue;
+			}
+			else if (copyOfInput == "-s")
+			{
+				m_savedResults.push_back(m_result);
+				continue;
+			}
+			else if (copyOfInput == "-ssr")
+			{
+				m_display->showSavedResults(m_savedResults);
 				continue;
 			}
 			else if (copyOfInput == "-u")
@@ -217,16 +242,24 @@ namespace prefixCalculator
 				{
 					if (numRep::oper::isOperator(number) || numRep::oper::isSingleOperator(number) || (numRep::oper::isAllOperator(number) && isINegative))
 					{
-						if (start == 0 && m_stack->size() == 2)
-							p_stackComputation(number);
-						else if (m_stack->size() < 2 && !(numRep::oper::isSingleOperator(number) || numRep::oper::isAllOperator(number)))
+						if (start == 0 && m_deque->size() == 2)
+						{
+							if (m_education)
+								p_showStack();
+
+ 							p_stackComputation(number);
+						}
+						else if (m_deque->size() < 2 && !(numRep::oper::isSingleOperator(number) || numRep::oper::isAllOperator(number)))
 							return false;
 						else
 						{
+							if (m_education)
+								p_showStack();
+
 							p_stackComputation(number);
 						}
 
-						if (start == 0 && m_stack->size() > 1)
+						if (start == 0 && m_deque->size() > 1)
 							return false;
 					}
 					else if ((numRep::oper::isAllOperator(number) && !isINegative) || !checkRomanNumeral(m_regexCheck, number))
@@ -235,7 +268,26 @@ namespace prefixCalculator
 					}
 					else
 					{
-						m_stack->push(p_stringToFloat(number, iter->first));
+						if (number[0] == 's') // If input number is savedResult
+						{
+							int pos = std::stoi(number.substr(1));
+							if (pos < 0 || pos > m_savedResults.size() - 1 || m_savedResults.empty())
+								return false;
+						}
+
+						if (m_education && m_firstEducCalculation)
+						{
+							if (m_firstEducCalculation)
+							{
+								std::cout << "-----------------------------------------" << std::endl;
+								std::cout << "Evaluating expression: \"" << str  << '\"' << std::endl << std::endl;
+								m_firstEducCalculation = !m_firstEducCalculation;
+							}
+
+							std::cout << std::setprecision(15) << " - Push \'" << number << "\' to stack." << std::endl;
+						}
+
+						m_deque->push_front(p_stringToFloat(number, iter->first));
 					}
 				}
 				else
@@ -259,9 +311,12 @@ namespace prefixCalculator
 			}
 			return false;
 		}
-		m_history->push(m_stack->top());
-		m_display->displayResult(m_stack->top());
+
+		m_result = m_deque->at(0);
+		m_history->push(m_result);
+		m_display->displayResult(m_deque->at(0));
 		this->p_clearStack();
+		this->m_lastExpression = str;
 
 		return true;
 	}
@@ -275,14 +330,30 @@ namespace prefixCalculator
 		{
 			if (!isSingleOperator(op))
 			{
-				num2 = m_stack->top();
-				m_stack->pop();
+				num2 = m_deque->at(0);
+				m_deque->pop_front();
 			}
 
-			num1 = m_stack->top();
-			m_stack->pop();
+			num1 = m_deque->at(0);
+			m_deque->pop_front();
+
+
 			res = p_calculate(num1, num2, op);
-			m_stack->push(res);
+
+			if (m_education)
+			{
+				if(!isSingleOperator(op))
+					std::cout << std::setprecision(15) << "- Apply operator \'" << op << "\' on \'" << num2 << "\' and \'" << num1 \
+						<< "\'.\n - The result is: \'" << res << "\' and add it to the stack.\n" << std::endl;
+				else
+					std::cout << std::setprecision(15) << "- Apply operator \'" << op << "\' on \'" << num1 \
+						<< "\'.\n - The result is: \'" << res << "\' and add it to the stack.\n" << std::endl;
+			}
+
+			m_deque->push_front(res);
+
+			if(m_education)
+				p_showStack();
 		}
 		else
 		{
@@ -291,27 +362,28 @@ namespace prefixCalculator
 			if (!isSum)
 				res = 1;
 
-			while (!m_stack->empty())
+			while (!m_deque->empty())
 			{
-				if (isSum)
-					res += m_stack->top();
+				if (!isSum)
+					res *= m_deque->at(0);
 				else
-					res *= m_stack->top();
+					res += m_deque->at(0);
 
-				m_stack->pop();
+				m_deque->pop_front();
 			}
 
-			m_stack->push(res);
+			m_deque->push_front(res);
 		}
 	}
 
 	double_t CalcBrain::p_stringToFloat(std::string& str, const std::string& key)
 	{
 		double_t res = 0;
-		int type = 0;
+		int type = 0, pos = -1;
 		auto patterns = m_regexCheck->getKeys();
 		numRep::Fraction fraction;
 		numRep::RomanNumeral roman;
+		std::string changedStr = str.substr(1);
 
 		for (auto it = patterns.begin(); it != patterns.end(); it++)
 		{
@@ -358,7 +430,12 @@ namespace prefixCalculator
 			roman = numRep::RomanNumeral(str);
 			res = (double_t)numRep::stringToRoman(str);
 			break;
-		case 7:
+		case 7: // Returns savedResult at given position
+			pos = std::stoi(changedStr);
+			res = m_savedResults[pos];
+			m_savedResults.erase(m_savedResults.begin() + pos);
+			break;
+		case 8:
 			res = (double_t)std::stoi(str);
 			break;
 		default:
@@ -370,9 +447,22 @@ namespace prefixCalculator
 
 	void CalcBrain::p_clearStack()
 	{
-		while (!m_stack->empty())
-			m_stack->pop();
+		while (!m_deque->empty())
+			m_deque->pop_front();
 	}
+
+	void CalcBrain::p_showStack()
+	{
+		int i = m_deque->size() - 1;
+		std::cout << std::endl << " --STACK-- " << std::endl;
+		while (i >= 0)
+		{
+			std::cout << "     " << m_deque->at(i) << std::endl;
+			i--;
+		}
+		std::cout << std::endl;
+	}
+
 
 
 	// Useful functions
@@ -418,4 +508,8 @@ namespace prefixCalculator
 		return num * fac(num - 1);
 	}
 
+	void cc(std::string& str)
+	{
+		str.erase(remove(str.begin()), str.end());
+	}
 }

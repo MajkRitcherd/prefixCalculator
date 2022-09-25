@@ -17,7 +17,7 @@ namespace prefixCalculator
 		CalcBrain();
 		~CalcBrain();
 
-		void run(Display* display);
+		void run(Display* display, bool education);
 	private:
 
 		void p_stop();
@@ -27,11 +27,14 @@ namespace prefixCalculator
 		double_t p_stringToFloat(std::string& str, const std::string& key);
 		void p_stackComputation(std::string& op);
 		void p_clearStack();
+		void p_showStack();
 
 	private:
 		double_t m_result;
-		bool m_stopRunning = false;
-		std::stack<double_t>* m_stack = nullptr;
+		bool m_stopRunning = false, m_education = false, m_firstEducCalculation = false;
+		std::deque<double_t>* m_deque = nullptr;
+		std::string m_lastExpression;
+		std::vector<double_t> m_savedResults;
 	
 		Queue::LifoQueue<double_t>* m_history;
 		Display* m_display = nullptr;
@@ -47,5 +50,6 @@ namespace prefixCalculator
 	bool isHexadecimalChar(char c);
 	bool isBinOrHex(char& c, char& num);
 	double_t fac(double_t num);
+	void cc(std::string& str);
 }
 

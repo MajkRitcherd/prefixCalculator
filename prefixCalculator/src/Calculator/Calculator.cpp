@@ -14,6 +14,6 @@ namespace prefixCalculator
 
 	void Calculator::run()
 	{
-		m_calcBrain->run(m_display);
+		m_calcBrain->run(m_display, EDUCATION);
 	}
 }

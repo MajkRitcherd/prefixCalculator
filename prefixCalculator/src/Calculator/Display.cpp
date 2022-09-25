@@ -29,7 +29,11 @@ namespace prefixCalculator
 				"|  - To see history of results, enter '-h/-H'                                  |\n" \
 				"|  - To clear the history, enter '-c/-C'                                       |\n" \
 				"|  - To show mathematical operations, enter '-io/-IO'                          |\n" \
-				"|  - To update currency exchanges, enter '-u/-U'                               |\n";
+				"|  - To save result, enter '-s/-S'                                             |\n" \
+				"|  - To show saved results and their positions, enter '-ssr/-SSR'              |\n" \
+				"|  - To update currency exchanges, enter '-u/-U'                               |\n" \
+				"|  - Usage of saved results: '+ s0 s1' sums saved number at                    |\n" \
+				"|      position s0 and s1                                                      |\n";
 		cout << "|                                                                              |\n" \
 				"|                                                                              |\n" \
 				"| Input can be any real number, positive or negative, e.g. 5, -2.123, etc.     |\n" \
@@ -91,11 +95,26 @@ namespace prefixCalculator
 				"|    - Roman numerals, e.g. XVII                                               |\n" \
 				"|    - Binary numbers, e.g. 0b0101                                             |\n" \
 				"|    - Hexadecimal numbers, e.g. 0xA5                                          |\n" \
+				"|    - Saved numbers, e.g. s0, s1, s2, ... (as many as you wish)               |\n" \
 				"| Be aware of case sensitivity!! ('a' isn't same as 'A')                       |\n" \
 				"|                                                                              |\n" \
 				"| For more information, enter '-i/-I'                                          |\n" \
 				"| To quit enter '-q/-Q'                                                        |\n" \
 				"|                                                                              |\n";
+		cout << m_separationLine << endl;
+	}
+
+	void Display::showSavedResults(std::vector<double_t>& vec)
+	{	
+		cout << m_separationLine << endl;
+		cout << "|                                Saved results!                                |\n" \
+				"|------------------------------------------------------------------------------|\n" \
+				"|                                                                              |\n";
+
+		for (auto i = 0; i < vec.size(); i++)
+			cout << "|  s" << i << ": " << std::left << std::setfill(' ') << std::setw(72) << vec[i] << "|\n";
+
+		cout << "|                                                                              |\n";
 		cout << m_separationLine << endl;
 	}
 }

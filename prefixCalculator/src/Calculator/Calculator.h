@@ -1,8 +1,15 @@
 #pragma once
 
 #ifndef MAX_HISTORY
-#define MAX_HISTORY 10
+	#define MAX_HISTORY 10
 #endif // !MAX_HISTORY
+
+#ifdef EDUCATION
+	#define EDUCATION 1
+#else
+	#define EDUCATION 0
+#endif // EDUCATION
+
 
 
 #include "CalcBrain.h"

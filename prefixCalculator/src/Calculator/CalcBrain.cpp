@@ -25,11 +25,13 @@ namespace prefixCalculator
 
 	void CalcBrain::run(Display* display, bool education)
 	{
+		std::string input, copyOfInput;
 		m_education = education;
 		m_firstEducCalculation = true;
 		m_display = display;
+
 		m_display->showFirstHelp();
-		std::string input, copyOfInput;
+		
 		if (m_stopRunning)
 			m_stopRunning = !m_stopRunning;
 
@@ -38,11 +40,10 @@ namespace prefixCalculator
 		{
 			std::getline(std::cin, input);
 			copyOfInput = input;
-			copyOfInput = input;
-			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), ' '), copyOfInput.end());
-			copyOfInput.erase(remove(copyOfInput.begin(), copyOfInput.end(), '\t'), copyOfInput.end());
-			std::transform(copyOfInput.begin(), copyOfInput.end(), copyOfInput.begin(), [](unsigned char c) { return std::tolower(c); });
 
+			clearWhitespaces(copyOfInput);
+			transform(copyOfInput.begin(), copyOfInput.end(), copyOfInput.begin(), [](char c) {return tolower(c); });
+			
 			m_firstEducCalculation = true;
 
 			// Checks for control commands, otherwise calculates
@@ -71,7 +72,7 @@ namespace prefixCalculator
 				m_savedResults.push_back(m_result);
 				continue;
 			}
-			else if (copyOfInput == "-ssr")
+			else if (copyOfInput == "-sr")
 			{
 				m_display->showSavedResults(m_savedResults);
 				continue;
@@ -88,18 +89,29 @@ namespace prefixCalculator
 				p_stop();
 				continue;
 			}
-			else if (!p_extractComponents(input))
+			else if (checkWhitespaces(input))
 			{
-				this->p_clearStack();
-				std::cout << "\nYou've entered wrong input!" << std::endl;
+
+				try
+				{
+					if (!p_extractComponents(input))
+					{
+						p_clearStack();
+						m_display->displayError("Wrong input!");
+					}
+				}
+				catch (const char* error)
+				{
+					p_clearStack();
+					m_display->displayError(error);
+				}
+			}
+			else
+			{
+				p_clearStack();
+				m_display->displayError("Too many spaces between characters!");
 			}
 		}
-	}
-
-	void CalcBrain::p_stop()
-	{
-		delete m_regexCheck;
-		m_stopRunning = !m_stopRunning;
 	}
 
 	double_t CalcBrain::p_calculate(double_t num1, double_t num2, std::string& op)
@@ -189,19 +201,25 @@ namespace prefixCalculator
 			res = utilities::getRate(curr[3], curr[2], rate) * num1;
 			break;
 		case poToCz:
-			res = utilities::getRate(curr[1], curr[2], inverseRate)* num1;
+			res = utilities::getRate(curr[1], curr[2], inverseRate) * num1;
 			break;
 		case poToEu:
 			res = utilities::getRate(curr[0], curr[2], inverseRate) * num1;
 			break;
 		case poToDo:
-			res = utilities::getRate(curr[3], curr[2], inverseRate)* num1;
-			break; 
+			res = utilities::getRate(curr[3], curr[2], inverseRate) * num1;
+			break;
 		default:
 			throw std::runtime_error("Operation is unknown!!");
 		}
 
 		return res;
+	}
+
+	void CalcBrain::p_clearStack()
+	{
+		while (!m_deque->empty())
+			m_deque->pop_front();
 	}
 
 	bool CalcBrain::p_extractComponents(std::string& str)
@@ -227,6 +245,7 @@ namespace prefixCalculator
 					start = i + 1;
 
 				number = str.substr(start, size);
+
 				auto iter = m_regexCheck->checkPattern(number);
 				if (!m_regexCheck->isEnd(iter))
 				{
@@ -234,18 +253,29 @@ namespace prefixCalculator
 					{
 						if (start == 0 && m_deque->size() == 2)
 						{
-							if (m_education)
-								p_showStack();
+							if (m_education && m_firstEducCalculation)
+							{
+								education::displayFirstEvaluation(str);
+								education::displayStackPush(number);
+								m_firstEducCalculation = !m_firstEducCalculation;
+							}
 
+							p_showStack();
  							p_stackComputation(number);
 						}
-						else if (m_deque->size() < 2 && !(numRep::oper::isSingleOperator(number) || numRep::oper::isAllOperator(number)))
+						else if ((m_deque->size() > 0 && m_deque->size() < 2 && !(numRep::oper::isSingleOperator(number)) || numRep::oper::isAllOperator(number)))
 							return false;
 						else
 						{
-							if (m_education)
-								p_showStack();
 
+							if (m_education && m_firstEducCalculation)
+							{
+								education::displayFirstEvaluation(str);
+								education::displayStackPush(number);
+								m_firstEducCalculation = !m_firstEducCalculation;
+							}
+
+							p_showStack();
 							p_stackComputation(number);
 						}
 
@@ -261,27 +291,28 @@ namespace prefixCalculator
 						if (number[0] == 's') // If input number is savedResult
 						{
 							int pos = std::stoi(number.substr(1));
-							if (pos < 0 || pos > m_savedResults.size() - 1 || m_savedResults.empty())
-								return false;
+
+							if (pos < 0 || pos > m_savedResults.size() - 1)
+								throw "[ERROR]: Position of a saved number is out of range!!";
+
+							if (m_savedResults.empty())
+								throw "[ERROR]: Don't have any saved numbers!!";
 						}
 
 						if (m_education && m_firstEducCalculation)
 						{
-							if (m_firstEducCalculation)
-							{
-								std::cout << "-----------------------------------------" << std::endl;
-								std::cout << "Evaluating expression: \"" << str  << '\"' << std::endl << std::endl;
-								m_firstEducCalculation = !m_firstEducCalculation;
-							}
-
-							std::cout << std::setprecision(15) << " - Push \'" << number << "\' to stack." << std::endl;
+							education::displayFirstEvaluation(str);
+							education::displayStackPush(number);
+							m_firstEducCalculation = !m_firstEducCalculation;
 						}
+						else if(m_education)
+							education::displayStackPush(number);
 
 						m_deque->push_front(p_stringToFloat(number, iter->first));
 					}
 				}
 				else
-					return false;
+					throw "Unrecognized number or operation!!";
 
 				size = 0;
 				i--;
@@ -293,22 +324,40 @@ namespace prefixCalculator
 				i--;
 				continue;
 			}
-			else if (isBinOrHex(c, str[i - 1]))
+			else if (i > 0 && isBinOrHex(c, str[i - 1]))
 			{
 				size += 2;
 				i -= 2;
 				continue;
 			}
-			return false;
+			throw "You've entered wrong input!!";
 		}
 
+		p_showStack();
 		m_result = m_deque->at(0);
 		m_history->push(m_result);
-		m_display->displayResult(m_deque->at(0));
+		
+		if (m_education)
+			education::displayNumber(m_result);
+		else
+			m_display->displayResult(m_deque->at(0));
+
 		this->p_clearStack();
 		this->m_lastExpression = str;
 
 		return true;
+	}
+
+	void CalcBrain::p_showStack()
+	{
+		int i = m_deque->size() - 1;
+		std::cout << std::endl << " --STACK-- " << std::endl;
+		while (i >= 0)
+		{
+			std::cout << "     " << m_deque->at(i) << std::endl;
+			i--;
+		}
+		std::cout << std::endl;
 	}
 
 	void CalcBrain::p_stackComputation(std::string& op)
@@ -332,18 +381,13 @@ namespace prefixCalculator
 
 			if (m_education)
 			{
-				if(!isSingleOperator(op))
-					std::cout << std::setprecision(15) << "- Apply operator \'" << op << "\' on \'" << num2 << "\' and \'" << num1 \
-						<< "\'.\n - The result is: \'" << res << "\' and add it to the stack.\n" << std::endl;
+				if (!isSingleOperator(op))
+					education::displayOperationExecution(op, num1, num2, res, false);
 				else
-					std::cout << std::setprecision(15) << "- Apply operator \'" << op << "\' on \'" << num1 \
-						<< "\'.\n - The result is: \'" << res << "\' and add it to the stack.\n" << std::endl;
+					education::displayOperationExecution(op, num1, num2, res, true);
 			}
 
 			m_deque->push_front(res);
-
-			if(m_education)
-				p_showStack();
 		}
 		else
 		{
@@ -364,6 +408,12 @@ namespace prefixCalculator
 
 			m_deque->push_front(res);
 		}
+	}
+
+	void CalcBrain::p_stop()
+	{
+		delete m_regexCheck;
+		m_stopRunning = !m_stopRunning;
 	}
 
 	double_t CalcBrain::p_stringToFloat(std::string& str, const std::string& key)
@@ -435,24 +485,6 @@ namespace prefixCalculator
 		return res;
 	}
 
-	void CalcBrain::p_clearStack()
-	{
-		while (!m_deque->empty())
-			m_deque->pop_front();
-	}
-
-	void CalcBrain::p_showStack()
-	{
-		int i = m_deque->size() - 1;
-		std::cout << std::endl << " --STACK-- " << std::endl;
-		while (i >= 0)
-		{
-			std::cout << "     " << m_deque->at(i) << std::endl;
-			i--;
-		}
-		std::cout << std::endl;
-	}
-
 
 
 	// Useful functions
@@ -476,19 +508,18 @@ namespace prefixCalculator
 		return std::regex_match(str, iter->second);
 	}
 
-	bool isRomanNumeralChar(char c)
+	bool checkWhitespaces(std::string& str)
 	{
-		return c == 'I' || c == 'V' || c == 'X' || c == 'L' || c == 'C' || c == 'D' || c == 'M';
+		for (int i = 0; i < str.length() - 1; i++)
+			if ((str[i] == ' ' && str[i + 1] == ' ') || str[i] == '\t')
+				return false;
+		return true;
 	}
 
-	bool isHexadecimalChar(char c)
+	void clearWhitespaces(std::string& str)
 	{
-		return c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F';
-	}
-
-	bool isBinOrHex(char& c, char& num)
-	{
-		return (c == 'b' || c == 'x') && num == '0';
+		str.erase(remove(str.begin(), str.end(), ' '), str.end());
+		str.erase(remove(str.begin(), str.end(), '\t'), str.end());
 	}
 
 	double_t fac(double_t num)
@@ -496,5 +527,20 @@ namespace prefixCalculator
 		if (num == 0)
 			return 1;
 		return num * fac(num - 1);
+	}
+
+	bool isBinOrHex(char& c, char& num)
+	{
+		return (c == 'b' || c == 'x') && num == '0';
+	}
+
+	bool isHexadecimalChar(char c)
+	{
+		return c == 'A' || c == 'B' || c == 'C' || c == 'D' || c == 'E' || c == 'F';
+	}
+
+	bool isRomanNumeralChar(char c)
+	{
+		return c == 'I' || c == 'V' || c == 'X' || c == 'L' || c == 'C' || c == 'D' || c == 'M';
 	}
 }

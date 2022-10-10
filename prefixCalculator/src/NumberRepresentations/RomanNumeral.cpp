@@ -11,31 +11,34 @@ namespace numRep
 	RomanNumeral::RomanNumeral(std::string& str)
 		: m_number(p_getNumber(str)) {};
 
-	uint32_t RomanNumeral::p_getNumber(std::string& str) const
+	RomanNumeral RomanNumeral::operator+(const RomanNumeral& num) const
 	{
-		uint32_t res = 0;
+		return RomanNumeral(this->m_number + num.m_number);
+	}
 
-		for (size_t i = 0; i < str.length(); i++)
-		{
-			uint32_t num1 = p_getDigit(str[i]);
+	RomanNumeral RomanNumeral::operator-(const RomanNumeral& num) const
+	{
+		return RomanNumeral(this->m_number - num.m_number);
+	}
 
-			if (i + 1 < str.length())
-			{
-				uint32_t num2 = p_getDigit(str[i + 1]);
+	RomanNumeral RomanNumeral::operator*(const RomanNumeral& num) const
+	{
+		return RomanNumeral(this->m_number * num.m_number);
+	}
 
-				if (num1 >= num2)
-					res += num1;
-				else
-				{
-					res = res + num2 - num1;
-					i++;
-				}
-			}
-			else
-				res += num1;
-		}
+	RomanNumeral RomanNumeral::operator/(const RomanNumeral& num) const
+	{
+		return RomanNumeral((uint32_t)round(this->m_number / num.m_number));
+	}
 
-		return res;
+	std::strong_ordering RomanNumeral::operator<=>(const RomanNumeral& num) const
+	{	
+		if (this->m_number < num.m_number)
+			return std::strong_ordering::less;
+		else if (this->m_number > num.m_number)
+			return std::strong_ordering::greater;
+		else
+			return std::strong_ordering::equal;
 	}
 
 	uint32_t RomanNumeral::p_getDigit(char c) const
@@ -72,34 +75,31 @@ namespace numRep
 		return res;
 	}
 
-	RomanNumeral RomanNumeral::operator+(const RomanNumeral& num) const
+	uint32_t RomanNumeral::p_getNumber(std::string& str) const
 	{
-		return RomanNumeral(this->m_number + num.m_number);
-	}
+		uint32_t res = 0;
 
-	RomanNumeral RomanNumeral::operator-(const RomanNumeral& num) const
-	{
-		return RomanNumeral(this->m_number - num.m_number);
-	}
+		for (size_t i = 0; i < str.length(); i++)
+		{
+			uint32_t num1 = p_getDigit(str[i]);
 
-	RomanNumeral RomanNumeral::operator*(const RomanNumeral& num) const
-	{
-		return RomanNumeral(this->m_number * num.m_number);
-	}
+			if (i + 1 < str.length())
+			{
+				uint32_t num2 = p_getDigit(str[i + 1]);
 
-	RomanNumeral RomanNumeral::operator/(const RomanNumeral& num) const
-	{
-		return RomanNumeral((uint32_t)round(this->m_number / num.m_number));
-	}
+				if (num1 >= num2)
+					res += num1;
+				else
+				{
+					res = res + num2 - num1;
+					i++;
+				}
+			}
+			else
+				res += num1;
+		}
 
-	std::strong_ordering RomanNumeral::operator<=>(const RomanNumeral& num) const
-	{	
-		if (this->m_number < num.m_number)
-			return std::strong_ordering::less;
-		else if (this->m_number > num.m_number)
-			return std::strong_ordering::greater;
-		else
-			return std::strong_ordering::equal;
+		return res;
 	}
 
 	uint32_t stringToRoman(std::string& str)

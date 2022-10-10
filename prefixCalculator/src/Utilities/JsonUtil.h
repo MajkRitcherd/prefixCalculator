@@ -10,10 +10,20 @@ namespace prefixCalculator
 	{
 		using json = nlohmann::json;
 
-		// Downloads currency exchange from internet and writes it into a file
+		/// <summary>
+		/// Returns currency rate between fromCurr to toCurr.
+		/// </summary>
+		/// <param name="fromCurr:">Currency to change from.</param>
+		/// <param name="toCurr:">Currency to change to.</param>
+		/// <param name="rate:">'rate' (fromCurr -> toCurr) or 'inverseRate' (toCurr -> fromCurr)</param>
+		/// <returns>Curerncy rate.</returns>
+		double_t getRate(std::string& fromCurr, std::string& toCurr, std::string& rate);
+
+		/// <summary>
+		/// Downloads currency exchange from internet and writes it to the file.
+		/// </summary>
+		/// <returns>True if successful, otherise false.</returns>
 		bool UpdateJson();
 
-		// Returns currency rate between fromC to toC
-		double_t getRate(std::string& from, std::string& to, std::string& rate);
 	}
 }

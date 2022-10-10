@@ -14,13 +14,14 @@ namespace prefixCalculator
 	{
 	}
 
-	void Display::displayResult(double_t& number)
+	void Display::displayError(const char* error) const
 	{
-		m_result = &number;
-		std::cout << std::setprecision(15) << *m_result << std::endl;
+		std::cout << "\n########################################################\n\n" \
+			<< error \
+			<< "\n\n########################################################" << std::endl;
 	}
 
-	void Display::displayInfo()
+	void Display::displayInfo() const
 	{
 		cout << m_separationLine << endl;
 		cout << "|                                    INFO                                      |" << endl;
@@ -45,7 +46,7 @@ namespace prefixCalculator
 		cout << m_separationLine << endl;
 	}
 
-	void Display::displayOperators()
+	void Display::displayOperators() const
 	{
 		cout << endl << m_separationLine << endl;
 		cout << "|                                  OPERATOR                                    |" << endl;
@@ -64,26 +65,12 @@ namespace prefixCalculator
 		cout << m_separationLine << endl;
 	}
 
-	void Display::showHistory(Queue::LifoQueue<double_t>* history)
+	void Display::displayResult(const double_t& number) const
 	{
-		cout << endl << m_separationLine << endl;
-		cout << "|                                  HISTORY                                     |\n" \
-				"|------------------------------------------------------------------------------|\n" \
-				"|                                                                              |\n";
-		for (int i = 0; i < MAX_HISTORY; i++)
-		{
-			if(i != 0)
-				cout << "|------------------                                                            |" << endl;
-			if ((*history)[i] == std::numeric_limits<double_t>::max())
-				cout << "| NaN                                                                          |" << endl;
-			else
-				cout << "| " << std::left << std::setfill(' ') << std::setw(77) << (*history)[i] << "|\n";
-		}
-		cout << "|                                                                              |\n";
-		cout << m_separationLine << endl;
+		std::cout << std::setprecision(15) << number << std::endl;
 	}
 
-	void Display::showFirstHelp()
+	void Display::showFirstHelp() const
 	{
 		cout << m_separationLine << endl;
 		cout << "|                         Welcome to prefixCalculator!                         |\n" \
@@ -104,7 +91,26 @@ namespace prefixCalculator
 		cout << m_separationLine << endl;
 	}
 
-	void Display::showSavedResults(std::vector<double_t>& vec)
+	void Display::showHistory(Queue::LifoQueue<double_t>* history) const
+	{
+		cout << endl << m_separationLine << endl;
+		cout << "|                                  HISTORY                                     |\n" \
+				"|------------------------------------------------------------------------------|\n" \
+				"|                                                                              |\n";
+		for (int i = 0; i < MAX_HISTORY; i++)
+		{
+			if(i != 0)
+				cout << "|------------------                                                            |" << endl;
+			if ((*history)[i] == std::numeric_limits<double_t>::max())
+				cout << "| NaN                                                                          |" << endl;
+			else
+				cout << "| " << std::left << std::setfill(' ') << std::setw(77) << (*history)[i] << "|\n";
+		}
+		cout << "|                                                                              |\n";
+		cout << m_separationLine << endl;
+	}
+
+	void Display::showSavedResults(const std::vector<double_t>& vec) const
 	{	
 		cout << m_separationLine << endl;
 		cout << "|                                Saved results!                                |\n" \
@@ -116,5 +122,34 @@ namespace prefixCalculator
 
 		cout << "|                                                                              |\n";
 		cout << m_separationLine << endl;
+	}
+
+	namespace education
+	{
+		void displayFirstEvaluation(std::string& expression)
+		{
+			std::cout << "-----------------------------------------" << std::endl;
+			std::cout << "Evaluating expression: \"" << expression << '\"' << std::endl << std::endl;
+		}
+
+		void displayNumber(double_t& num)
+		{
+			std::cout << "The result is: " << num << std::endl << std::endl;
+		}
+
+		void displayOperationExecution(std::string& op, double_t& num1, double_t& num2, double_t& res, bool isSingle)
+		{
+			if(isSingle)
+				std::cout << std::setprecision(15) << " - Apply operator \'" << op << "\' on \'" << num1 \
+				<< "\'.\n - The result is: \'" << res << "\' and add it to the stack.\n" << std::endl;
+			else
+				std::cout << std::setprecision(15) << " - Apply operator \'" << op << "\' on \'" << num2 << "\' and \'" << num1 \
+					<< "\'.\n - The result is: \'" << res << "\' and add it to the stack.\n" << std::endl;
+		}
+
+		void displayStackPush(std::string& number)
+		{
+			std::cout << std::setprecision(15) << " - Push \'" << number << "\' to stack." << std::endl;
+		}
 	}
 }

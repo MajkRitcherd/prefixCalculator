@@ -6,6 +6,22 @@ namespace prefixCalculator
 {
 	namespace utilities
 	{
+		void CloseFile(std::fstream& file)
+		{
+			file.close();
+		}
+
+		bool DelFile(const wchar_t* wDest)
+		{
+			_bstr_t b(wDest);
+			const char* dest = b;
+
+			if (remove(dest) != 0)
+				throw "Couldn't delete the file!";
+			else
+				return true;
+		}
+
 		bool GetFile(const wchar_t* url, const wchar_t* saveDest)
 		{
 			if (S_OK == URLDownloadToFileW(NULL, url, saveDest, 0, NULL))
@@ -23,22 +39,6 @@ namespace prefixCalculator
 			if (!fileHandle.is_open())
 				throw "Couldn't open the file!";
 			return fileHandle;
-		}
-
-		void CloseFile(std::fstream& file)
-		{
-			file.close();
-		}
-
-		bool DelFile(const wchar_t* wDest)
-		{
-			_bstr_t b(wDest);
-			const char* dest = b;
-
-			if (remove(dest) != 0)
-				throw "Couldn't delete the file!";
-			else
-				return true;
 		}
 	}
 }

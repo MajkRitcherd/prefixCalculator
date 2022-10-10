@@ -85,49 +85,6 @@ namespace numRep
 			return std::strong_ordering::equal;
 	}
 
-	void Fraction::setNumerator(int32_t num)
-	{
-		this->numerator = num;
-	}
-
-	void Fraction::setNumerator(const std::string& num)
-	{
-		this->numerator = std::stoi(num);
-	}
-
-	void Fraction::setDenominator(int32_t num)
-	{
-		this->denominator = num;
-	}
-
-	void Fraction::setDenominator(const std::string& num)
-	{
-		this->denominator = std::stoi(num);
-	}
-
-	int32_t Fraction::greatestCommonDivisor()
-	{
-		int32_t a, b, tmp;
-		if (numerator < denominator)
-		{
-			a = denominator;
-			b = numerator;
-		}
-		else
-		{
-			a = numerator;
-			b = denominator;
-		}
-
-		while (b != 0)
-		{
-			tmp = b;
-			b = a % b;
-			a = tmp;
-		}
-		return a;
-	}
-
 	int32_t Fraction::greatestCommonDivisor(int32_t a, int32_t b)
 	{
 		int32_t tmp;
@@ -145,6 +102,26 @@ namespace numRep
 			a = tmp;
 		}
 		return a;
+	}
+
+	void Fraction::setDenominator(int32_t num)
+	{
+		this->denominator = num;
+	}
+
+	void Fraction::setDenominator(const std::string& num)
+	{
+		this->denominator = std::stoi(num);
+	}
+
+	void Fraction::setNumerator(int32_t num)
+	{
+		this->numerator = num;
+	}
+
+	void Fraction::setNumerator(const std::string& num)
+	{
+		this->numerator = std::stoi(num);
 	}
 
 	std::ostream& operator<<(std::ostream& stream, const Fraction& frac)

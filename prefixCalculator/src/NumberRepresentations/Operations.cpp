@@ -5,15 +5,6 @@ namespace numRep
 {
 	namespace oper
 	{
-		opCode getCode(std::string& str)
-		{
-			int pos = findString(str);
-			if (pos == -1)
-				throw std::runtime_error("Operation does not exist!!");
-			else
-				return opCode(pos);
-		}
-
 		int findString(std::string& str)
 		{
 			for (int i = 0; i < TWOCOUNT; i++)
@@ -31,10 +22,19 @@ namespace numRep
 			return -1;
 		}
 
-		bool isSingleOperator(std::string& str)
+		opCode getCode(std::string& str)
 		{
-			for (int i = 0; i < SINGLECOUNT; i++)
-				if (str == str1Code[i])
+			int pos = findString(str);
+			if (pos == -1)
+				throw std::runtime_error("Operation does not exist!!");
+			else
+				return opCode(pos);
+		}
+
+		bool isAllOperator(std::string& str)
+		{
+			for (int i = 0; i < ALLCOUNT; i++)
+				if (str == strAllCode[i])
 					return true;
 			return false;
 		}
@@ -46,11 +46,11 @@ namespace numRep
 					return true;
 			return false;
 		}
-		
-		bool isAllOperator(std::string& str)
+
+		bool isSingleOperator(std::string& str)
 		{
-			for (int i = 0; i < ALLCOUNT; i++)
-				if (str == strAllCode[i])
+			for (int i = 0; i < SINGLECOUNT; i++)
+				if (str == str1Code[i])
 					return true;
 			return false;
 		}

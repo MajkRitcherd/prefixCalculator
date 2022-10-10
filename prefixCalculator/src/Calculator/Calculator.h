@@ -17,12 +17,20 @@
 
 namespace prefixCalculator
 {
+//========================================================================
+//																		  
+//				Class representing the actual calculator			  
+//																		  
+//========================================================================
 	class Calculator
 	{
 	public:
 		Calculator();
 		~Calculator();
 
+		/// <summary>
+		/// Starts the calculator and keeps running.
+		/// </summary>
 		void run();
 
 	private:

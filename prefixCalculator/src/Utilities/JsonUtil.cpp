@@ -6,6 +6,17 @@ namespace prefixCalculator
 {
 	namespace utilities
 	{
+		double_t getRate(std::string& fromCurr, std::string& toCurr, std::string& rate)
+		{
+			using json = nlohmann::json;
+
+			auto file = utilities::OpenFile(L"data\\currency.json", std::ios::in);
+			json js = json::parse(file);
+			utilities::CloseFile(file);
+
+			return (double_t)std::stod(js[fromCurr][toCurr][rate].dump());
+		}
+
 		bool UpdateJson()
 		{
 			using namespace prefixCalculator;
@@ -57,18 +68,9 @@ namespace prefixCalculator
 			catch (const char* e)
 			{
 				std::cout << "Exception was thrown: " << e << std::endl;
+				return false;
 			}
 			return true;
 		}
-
-		double_t getRate(std::string& fromC, std::string& toC, std::string& rate)
-		{
-			using json = nlohmann::json;
-
-			auto file = utilities::OpenFile(L"data\\currency.json", std::ios::in);
-			json js = json::parse(file);
-			utilities::CloseFile(file);
-
-			return (double_t)std::stod(js[fromC][toC][rate].dump());		}
 	}
 }

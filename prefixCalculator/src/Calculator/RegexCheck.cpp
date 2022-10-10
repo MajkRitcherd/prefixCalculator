@@ -39,6 +39,15 @@ namespace prefixCalculator
 	{
 	}
 
+	std::map<std::string, std::regex>::iterator RegexCheck::checkPattern(std::string& str)
+	{
+		std::map<std::string, std::regex>::iterator it;
+		for (it = m_patterns.begin(); it != m_patterns.end(); it++)
+			if (std::regex_match(str, it->second))
+				return it;
+		return it;
+	}
+
 	std::vector<std::string> RegexCheck::getKeys() const
 	{
 		size_t count = m_patterns.size();
@@ -57,15 +66,6 @@ namespace prefixCalculator
 			res.push_back(it->second);
 
 		return res;
-	}
-
-	std::map<std::string, std::regex>::iterator RegexCheck::checkPattern(std::string& str)
-	{
-		std::map<std::string, std::regex>::iterator it;
-		for (it = m_patterns.begin(); it != m_patterns.end(); it++)
-			if (std::regex_match(str, it->second))
-				return it;
-		return it;
 	}
 
 	bool RegexCheck::isEnd(std::map<std::string, std::regex>::iterator it) const

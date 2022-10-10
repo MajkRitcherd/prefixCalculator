@@ -260,7 +260,9 @@ namespace prefixCalculator
 								m_firstEducCalculation = !m_firstEducCalculation;
 							}
 
-							p_showStack();
+							if(m_education)
+								p_showStack();
+
  							p_stackComputation(number);
 						}
 						else if ((m_deque->size() > 0 && m_deque->size() < 2 && !(numRep::oper::isSingleOperator(number)) || numRep::oper::isAllOperator(number)))
@@ -275,7 +277,9 @@ namespace prefixCalculator
 								m_firstEducCalculation = !m_firstEducCalculation;
 							}
 
-							p_showStack();
+							if(m_education)
+								p_showStack();
+
 							p_stackComputation(number);
 						}
 
@@ -333,7 +337,8 @@ namespace prefixCalculator
 			throw "You've entered wrong input!!";
 		}
 
-		p_showStack();
+		if (m_education)
+			p_showStack();
 		m_result = m_deque->at(0);
 		m_history->push(m_result);
 		
